@@ -9,6 +9,10 @@ EMBEDDER_TRITON_MAP = {
     "Rostlab/prot_t5_xl_uniref50": "prot_t5_pipeline",
     "prot_t5": "prot_t5_pipeline",
     "prot_t5_xl": "prot_t5_pipeline",
+    # ESM2-T6 (8M) variants - smallest ESM2, good for CI testing
+    "facebook/esm2_t6_8M_UR50D": "esm2_t6_pipeline",
+    "esm2_t6": "esm2_t6_pipeline",
+    "esm2_8m": "esm2_t6_pipeline",
     # ESM2-T33 variants
     "facebook/esm2_t33_650M_UR50D": "esm2_t33_pipeline",
     "esm2_t33": "esm2_t33_pipeline",
@@ -46,6 +50,7 @@ def get_embedding_dimension(embedder_name: str) -> Optional[int]:
     # Map Triton model to embedding dimension
     dimension_map = {
         "prot_t5_pipeline": 1024,
+        "esm2_t6_pipeline": 320,
         "esm2_t33_pipeline": 1280,
         "esm2_t36_pipeline": 2560,
     }

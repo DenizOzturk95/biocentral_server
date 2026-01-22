@@ -12,6 +12,7 @@ from ..base_model import (
     LocalOnnxInferenceMixin,
     TritonInferenceMixin,
 )
+from ..biocentral_prediction_model import BiocentralPredictionModel
 
 
 class ExoTox(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
@@ -55,7 +56,7 @@ class ExoTox(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
     @staticmethod
     def get_metadata() -> ModelMetadata:
         return ModelMetadata(
-            name="ExoTox",
+            name=BiocentralPredictionModel.ExoTox,
             protocol=Protocol.sequence_to_class,
             description="Prediction of exotoxins",
             authors="Tanja Krueger and Damla A. Durmaz & Luisa F. Jimenez-Soto",
@@ -67,21 +68,22 @@ class ExoTox(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
                     name="exotoxin",
                     description="Protein is an exotoxin or not",
                     output_type=OutputType.PER_SEQUENCE,
-                    value_type=str,
-                    classes={
-                        "NOT_EXOTOXIN": OutputClass(
+                    value_type="str",
+                    classes=[
+                        OutputClass(
+                            shortcut="NOT_EXOTOXIN",
                             label="NOT_EXOTOXIN",
                             description="Protein is not an exotoxin",
                         ),
-                        "EXOTOXIN": OutputClass(
+                        OutputClass(
+                            shortcut="EXOTOXIN",
                             label="EXOTOXIN",
                             description="Protein is an exotoxin",
                         ),
-                    },
+                    ],
                 )
             ],
             model_size="147.4 KB",
-            testset_performance="",
             training_data_link="https://data.ub.uni-muenchen.de/576/",
             embedder="Rostlab/prot_t5_xl_uniref50",
         )

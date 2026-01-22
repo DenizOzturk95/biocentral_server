@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional, Any, Dict
 
 from biotrainer.input_files import BiotrainerSequenceRecord
@@ -7,8 +9,14 @@ from pydantic import BaseModel, Field, model_validator
 class SequenceTrainingData(BaseModel):
     seq_id: str = Field(description="Sequence identifier", min_length=1)
     sequence: str = Field(description="AA Sequence", min_length=1)
-    label: str = Field(description="Label to predict")
-    set: str = Field(description="Set", examples=["train", "val", "test", "pred"])
+    set: str = Field(
+        description="Set", examples=["train", "val", "test", "casp12", "pred"]
+    )
+    label: Optional[str] = Field(
+        default=None,
+        description="Label to predict. "
+        "Mandatory for all sets except for prediction data.",
+    )
     mask: Optional[str] = Field(default=None, description="MASK for per-residue tasks")
 
     @model_validator(mode="after")
@@ -16,7 +24,11 @@ class SequenceTrainingData(BaseModel):
         if self.mask is not None:
             if len(self.mask) != len(self.sequence):
                 raise ValueError("Length of mask must match length of sequence")
-
+        if self.set.lower() != "pred":
+            if self.label is None:
+                raise ValueError(
+                    "Label must be specified for all sets except prediction data!"
+                )
         return self
 
     def to_biotrainer_seq_record(self) -> BiotrainerSequenceRecord:
@@ -32,6 +44,26 @@ class SequenceTrainingData(BaseModel):
         fasta_str += "\n" if self.mask is None else f"MASK={self.mask}\n"
         fasta_str += self.sequence
         return fasta_str
+
+    def delete_label(self) -> SequenceTrainingData:
+        """Delete label for active learning simulations"""
+        return SequenceTrainingData(
+            seq_id=self.seq_id,
+            sequence=self.sequence,
+            label=None,
+            set="pred",
+            mask=self.mask,
+        )
+
+    def set_label(self, label: str) -> SequenceTrainingData:
+        """Set label for active learning simulations"""
+        return SequenceTrainingData(
+            seq_id=self.seq_id,
+            sequence=self.sequence,
+            label=label,
+            set="train",
+            mask=self.mask,
+        )
 
 
 class ErrorResponse(BaseModel):
@@ -56,12 +88,6 @@ class ConfigVerificationResponse(BaseModel):
         default="",
         description="Empty string if verification successful, error message otherwise",
     )
-
-
-class ProtocolsResponse(BaseModel):
-    """Response model for available protocols"""
-
-    protocols: List[str] = Field(description="List of available protocol names")
 
 
 class ConfigOptionsResponse(BaseModel):

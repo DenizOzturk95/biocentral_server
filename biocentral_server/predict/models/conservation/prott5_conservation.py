@@ -13,6 +13,7 @@ from ..base_model import (
     LocalOnnxInferenceMixin,
     TritonInferenceMixin,
 )
+from ..biocentral_prediction_model import BiocentralPredictionModel
 
 from ....server_management import Prediction
 
@@ -53,7 +54,7 @@ class ProtT5Conservation(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixi
     @staticmethod
     def get_metadata() -> ModelMetadata:
         return ModelMetadata(
-            name="ProtT5Conservation",
+            name=BiocentralPredictionModel.ProtT5Conservation,
             protocol=Protocol.residue_to_class,
             description="VESPA model for protein residue conservation prediction",
             authors="C{'{e}}line Marquet and Michael Heinzinger and Tobias Olenyi and Christian Dallago and Kyra Erckert and Michael Bernhofer and Dmitrii Nechaev and Burkhard Rost",
@@ -66,49 +67,57 @@ class ProtT5Conservation(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixi
                     description="Per-residue evolutionary conservation prediction, "
                     "as defined by 10.1093/bioinformatics/bth070",
                     output_type=OutputType.PER_RESIDUE,
-                    value_type=str,
-                    classes={
-                        "0": OutputClass(
+                    value_type="str",
+                    classes=[
+                        OutputClass(
+                            shortcut="0",
                             label="Variable",
                             description="Residue is evolutionarily variable",
                         ),
-                        "1": OutputClass(
+                        OutputClass(
+                            shortcut="1",
                             label="Variable",
                             description="Residue is evolutionarily variable",
                         ),
-                        "2": OutputClass(
+                        OutputClass(
+                            shortcut="2",
                             label="Variable",
                             description="Residue is evolutionarily variable",
                         ),
-                        "3": OutputClass(
+                        OutputClass(
+                            shortcut="3",
                             label="Variable",
                             description="Residue is evolutionarily variable",
                         ),
-                        "4": OutputClass(
+                        OutputClass(
+                            shortcut="4",
                             label="Average",
                             description="Residue is equally conserved and variable",
                         ),
-                        "5": OutputClass(
+                        OutputClass(
+                            shortcut="5",
                             label="Average",
                             description="Residue is equally conserved and variable",
                         ),
-                        "6": OutputClass(
+                        OutputClass(
+                            shortcut="6",
                             label="Average",
                             description="Residue is equally conserved and variable",
                         ),
-                        "7": OutputClass(
-                            label="Variable",
-                            description="Residue is evolutionarily conserved",
-                        ),
-                        "8": OutputClass(
+                        OutputClass(
+                            shortcut="7",
                             label="Conserved",
                             description="Residue is evolutionarily conserved",
                         ),
-                    },
+                        OutputClass(
+                            shortcut="8",
+                            label="Conserved",
+                            description="Residue is evolutionarily conserved",
+                        ),
+                    ],
                 )
             ],
             model_size="926.7 KB",
-            testset_performance="",
             training_data_link="http://data.bioembeddings.com/public/design/",
             embedder="Rostlab/prot_t5_xl_uniref50",
         )

@@ -18,6 +18,7 @@ from ..base_model import (
     LocalOnnxInferenceMixin,
     TritonInferenceMixin,
 )
+from ..biocentral_prediction_model import BiocentralPredictionModel
 
 from ....server_management import Prediction, MutationPrediction
 
@@ -61,7 +62,7 @@ class VespaG(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
     @staticmethod
     def get_metadata() -> ModelMetadata:
         return ModelMetadata(
-            name="VespaG",
+            name=BiocentralPredictionModel.VespaG,
             protocol=Protocol.residue_to_class,  # TODO residue_to_value / mutation
             description="Single amino acid variant effect prediction based on VESPA and GEMME models",
             authors="Céline Marquet, Julius Schlensok, Marina Abakarova, Burkhard Rost, Elodie Laine",
@@ -73,14 +74,13 @@ class VespaG(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
                     name="variant_effect",
                     description="Prediction of the effect of amino acid mutations on protein function",
                     output_type=OutputType.MUTATION,
-                    value_type=float,
+                    value_type="float",
                     # Scores are normalized between 0 and 1
                     value_range=(0.0, 1.0),
                     unit="score",
                 )
             ],
             model_size="2.6 MB",
-            testset_performance="",
             training_data_link="https://zenodo.org/records/11085958",
             embedder="facebook/esm2_t36_3B_UR50D",  # Smaller model for testing: facebook/esm2_t33_650M_UR50D
         )
@@ -138,7 +138,7 @@ class VespaG(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
         delimiter: str = "",
     ) -> Dict[str, List[Prediction]]:
         scores_per_protein = {}
-        model_name = self.get_metadata().name
+        model_name = self.get_metadata().name.name
         protocol = self.get_metadata().protocol
         for seq_id, y in model_output[self.prediction_name].items():
             scores_per_protein[seq_id] = [

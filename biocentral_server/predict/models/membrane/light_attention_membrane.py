@@ -13,6 +13,7 @@ from ..base_model import (
     LocalOnnxInferenceMixin,
     TritonInferenceMixin,
 )
+from ..biocentral_prediction_model import BiocentralPredictionModel
 
 
 class LightAttentionMembrane(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
@@ -57,7 +58,7 @@ class LightAttentionMembrane(BaseModel, LocalOnnxInferenceMixin, TritonInference
     @staticmethod
     def get_metadata() -> ModelMetadata:
         return ModelMetadata(
-            name="LightAttentionMembrane",
+            name=BiocentralPredictionModel.LightAttentionMembrane,
             protocol=Protocol.residues_to_class,
             description="Prediction of protein membrane association",
             authors="Stärk, Hannes and Dallago, Christian and Heinzinger, Michael and Rost, Burkhard",
@@ -69,21 +70,22 @@ class LightAttentionMembrane(BaseModel, LocalOnnxInferenceMixin, TritonInference
                     name="membrane",
                     description="Protein membrane association",
                     output_type=OutputType.PER_SEQUENCE,
-                    value_type=str,
-                    classes={
-                        "Membrane": OutputClass(
+                    value_type="str",
+                    classes=[
+                        OutputClass(
+                            shortcut="Membrane",
                             label="Membrane",
                             description="Protein is associated with membranes",
                         ),
-                        "Soluble": OutputClass(
+                        OutputClass(
+                            shortcut="Soluble",
                             label="Soluble",
                             description="Protein is soluble and not membrane-associated",
                         ),
-                    },
+                    ],
                 )
             ],
             model_size="",  # onnx in MB
-            testset_performance="",
             training_data_link="http://data.bioembeddings.com/public/design/",
             embedder="Rostlab/prot_t5_xl_uniref50",
         )

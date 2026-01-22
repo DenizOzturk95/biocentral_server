@@ -14,6 +14,7 @@ from ..base_model import (
     LocalOnnxInferenceMixin,
     TritonInferenceMixin,
 )
+from ..biocentral_prediction_model import BiocentralPredictionModel
 
 
 class TMbed(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
@@ -86,7 +87,7 @@ class TMbed(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
     @staticmethod
     def get_metadata() -> ModelMetadata:
         return ModelMetadata(
-            name="TMbed",
+            name=BiocentralPredictionModel.TMbed,
             protocol=Protocol.residue_to_class,
             description="Prediction of transmembrane proteins",
             authors="Bernhofer, Michael and Rost, Burkhard",
@@ -98,45 +99,47 @@ class TMbed(BaseModel, LocalOnnxInferenceMixin, TritonInferenceMixin):
                     name="trans_membrane",
                     description="Per-residue transmembrane topology prediction",
                     output_type=OutputType.PER_RESIDUE,
-                    value_type=str,
-                    classes={
-                        "B": OutputClass(
+                    value_type="str",
+                    classes=[
+                        OutputClass(
+                            shortcut="B",
                             label="Transmembrane beta strand",
-                            description="Residue is part of a transmembrane beta strand "
-                            "(IN-->OUT orientation)",
+                            description="Residue is part of a transmembrane beta strand (IN-->OUT orientation)",
                         ),
-                        "b": OutputClass(
+                        OutputClass(
+                            shortcut="b",
                             label="Transmembrane beta strand",
-                            description="Residue is part of a transmembrane beta strand "
-                            "(OUT-->IN orientation)",
+                            description="Residue is part of a transmembrane beta strand (OUT-->IN orientation)",
                         ),
-                        "H": OutputClass(
+                        OutputClass(
+                            shortcut="H",
                             label="Transmembrane alpha helix",
-                            description="Residue is part of a transmembrane helix "
-                            "(IN-->OUT orientation)",
+                            description="Residue is part of a transmembrane helix (IN-->OUT orientation)",
                         ),
-                        "h": OutputClass(
+                        OutputClass(
+                            shortcut="h",
                             label="Transmembrane alpha helix",
-                            description="Residue is part of a transmembrane helix "
-                            "(OUT-->IN orientation)",
+                            description="Residue is part of a transmembrane helix (OUT-->IN orientation)",
                         ),
-                        "S": OutputClass(
+                        OutputClass(
+                            shortcut="S",
                             label="Signal peptide",
                             description="Residue is part of a signal peptide",
                         ),
-                        "i": OutputClass(
+                        OutputClass(
+                            shortcut="i",
                             label="Non-Transmembrane, inside",
                             description="Residue is on the inside (cytoplasmic) side",
                         ),
-                        "o": OutputClass(
+                        OutputClass(
+                            shortcut="o",
                             label="Non-Transmembrane, outside",
                             description="Residue is on the outside (extracellular) side",
                         ),
-                    },
+                    ],
                 )
             ],
             model_size="1.4 MB",
-            testset_performance="",
             training_data_link="http://data.bioembeddings.com/public/design/",
             embedder="Rostlab/prot_t5_xl_uniref50",
         )

@@ -16,8 +16,8 @@ from ..server_management import (
     TaskDTO,
     EmbeddingDatabaseFactory,
     FileContextManager,
-    get_custom_training_pipeline_loading,
-    get_custom_training_pipeline_memory,
+    get_custom_training_pipeline_autoeval_loading,
+    get_custom_training_pipeline_autoeval_memory,
     TrainingDTOObserver,
     TaskStatus,
 )
@@ -82,11 +82,13 @@ class AutoEvalTask(TaskInterface):
 
     def _get_pipeline(self, update_dto_callback: Callable) -> Pipeline:
         if self.embedder_name in get_predefined_embedder_names():
-            return get_custom_training_pipeline_memory(embedder_name=self.embedder_name)
+            return get_custom_training_pipeline_autoeval_memory(
+                embedder_name=self.embedder_name
+            )
         else:
             self._embed_all(update_dto_callback)
             embeddings_db = EmbeddingDatabaseFactory().get_embeddings_db()
-            return get_custom_training_pipeline_loading(
+            return get_custom_training_pipeline_autoeval_loading(
                 embedder_name=self.embedder_name, embeddings_db=embeddings_db
             )
 
@@ -111,7 +113,7 @@ class AutoEvalTask(TaskInterface):
             calculate_dto = None
             for dto in self.run_subtask(calculate_task):
                 calculate_dto = dto
-                if calculate_dto.embedding_current is not None:
+                if calculate_dto.embedding_progress is not None:
                     update_dto_callback(calculate_dto)
 
             if not calculate_dto or calculate_dto.embedded_sequences is None:

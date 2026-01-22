@@ -6,24 +6,31 @@ from .shared_endpoint_models import (
 )
 from .monitoring import MetricsCollector
 from .custom_middleware import BodySizeLimitMiddleware
-from .shared_endpoint_models import Prediction, MutationPrediction
+from .shared_endpoint_models import (
+    Prediction,
+    MutationPrediction,
+    EmbeddingProgress,
+    ActiveLearningResult,
+    ActiveLearningIterationResult,
+    ActiveLearningSimulationResult,
+)
 from .embedding_database import EmbeddingDatabaseFactory, EmbeddingsDatabase
 from .file_management import FileManager, StorageFileType, FileContextManager
 from .task_management import TaskInterface, TaskStatus, TaskManager, TaskDTO
 from .server_initialization import ServerInitializationManager, ServerModuleInitializer
 from .library_adapters import (
-    get_custom_training_pipeline_injection,
-    get_custom_training_pipeline_loading,
-    get_custom_training_pipeline_memory,
+    get_custom_training_pipeline_autoeval_loading,
+    get_custom_training_pipeline_autoeval_memory,
     TrainingDTOObserver,
 )
 from .triton_client import (
     TritonClientConfig,
     TritonInferenceRepository,
     create_triton_repository,
-    RepositoryManager,
+    TritonRepositoryManager,
     get_shared_repository,
     cleanup_repositories,
+    TritonError,
 )
 
 __all__ = [
@@ -37,16 +44,16 @@ __all__ = [
     "TaskManager",
     "EmbeddingDatabaseFactory",
     "EmbeddingsDatabase",
-    "get_custom_training_pipeline_injection",
-    "get_custom_training_pipeline_loading",
-    "get_custom_training_pipeline_memory",
+    "get_custom_training_pipeline_autoeval_loading",
+    "get_custom_training_pipeline_autoeval_memory",
     "TrainingDTOObserver",
     "ServerInitializationManager",
     "ServerModuleInitializer",
     "TritonClientConfig",
     "TritonInferenceRepository",
     "create_triton_repository",
-    "RepositoryManager",
+    "TritonRepositoryManager",
+    "TritonError",
     "get_shared_repository",
     "cleanup_repositories",
     "ErrorResponse",
@@ -56,4 +63,8 @@ __all__ = [
     "MutationPrediction",
     "BodySizeLimitMiddleware",
     "MetricsCollector",
+    "ActiveLearningResult",
+    "ActiveLearningIterationResult",
+    "ActiveLearningSimulationResult",
+    "EmbeddingProgress",
 ]

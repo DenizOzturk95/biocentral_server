@@ -11,7 +11,12 @@ from typing import Any, Dict, Callable, Generator, Optional, List
 
 from .task_utils import run_subtask_util
 
-from ..shared_endpoint_models import Prediction
+from ..shared_endpoint_models import (
+    Prediction,
+    ActiveLearningIterationResult,
+    ActiveLearningSimulationResult,
+    EmbeddingProgress,
+)
 
 
 class TaskStatus(str, Enum):
@@ -41,8 +46,7 @@ class TaskDTO(BaseModel):
     biotrainer_result: Optional[Dict[str, Any]] = None
 
     # embeddings
-    embedding_current: Optional[int] = None
-    embedding_total: Optional[int] = None
+    embedding_progress: Optional[EmbeddingProgress] = None
     embedded_sequences: Optional[Dict[str, str]] = None
     embeddings: Optional[List[BiotrainerSequenceRecord]] = None
     embeddings_file: Optional[str] = None
@@ -54,8 +58,9 @@ class TaskDTO(BaseModel):
     embedder_name: Optional[str] = None
     autoeval_progress: Optional[AutoEvalProgress] = None
 
-    # bay_opt
-    bay_opt_results: Optional[List] = None
+    # active_learning
+    al_iteration_result: Optional[ActiveLearningIterationResult] = None
+    al_simulation_result: Optional[ActiveLearningSimulationResult] = None
 
 
 class TaskInterface(ABC):
